@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — BotLead</title>
+<meta name="description" content="Informativa sulla privacy e sul trattamento dei dati personali del servizio BotLead, ai sensi del GDPR.">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --bg:      #07090f;
+  --bg2:     #0a0c18;
+  --border:  #1a1d35;
+  --indigo:  #6366f1;
+  --violet:  #8b5cf6;
+  --grad:    linear-gradient(135deg, #6366f1, #8b5cf6);
+  --text:    #e8eaf5;
+  --muted:   #6068a0;
+  --white:   #ffffff;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+a { color: var(--indigo); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(7,9,15,.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(26,29,53,.8);
+  height: 64px;
+  display: flex; align-items: center;
+  padding: 0 clamp(20px, 5vw, 80px);
+}
+
+.nav-inner {
+  max-width: 1200px; margin: 0 auto; width: 100%;
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.nav-logo {
+  font-size: 20px; font-weight: 800; letter-spacing: -0.5px;
+  background: var(--grad); -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; background-clip: text;
+  text-decoration: none;
+}
+
+.nav-back { font-size: 14px; color: var(--muted); transition: color .2s; }
+.nav-back:hover { color: var(--text); text-decoration: none; }
+
+.legal-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 120px clamp(20px, 5vw, 80px) 80px;
+}
+
+.legal-page h1 {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 900; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 8px;
+}
+
+.legal-page h1 .accent {
+  background: var(--grad);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+.legal-date { font-size: 13px; color: var(--muted); margin-bottom: 48px; }
+
+.legal-page h2 { font-size: 20px; font-weight: 700; margin: 40px 0 16px; color: var(--white); }
+.legal-page h3 { font-size: 16px; font-weight: 600; margin: 24px 0 10px; color: var(--indigo); }
+.legal-page p, .legal-page li { font-size: 15px; color: var(--muted); line-height: 1.8; margin-bottom: 12px; }
+.legal-page ul { padding-left: 20px; margin-bottom: 16px; }
+.legal-page li { margin-bottom: 6px; }
+
+.legal-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 24px; margin: 24px 0;
+}
+.legal-card p:last-child { margin-bottom: 0; }
+
+footer {
+  background: var(--bg2); border-top: 1px solid var(--border);
+  padding: 40px clamp(20px, 5vw, 80px);
+}
+
+.footer-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 20px;
+}
+
+.footer-logo { font-size: 18px; font-weight: 800; color: var(--white); }
+.footer-links { display: flex; gap: 24px; }
+.footer-links a { font-size: 13px; color: var(--muted); transition: color .2s; }
+.footer-links a:hover { color: var(--text); }
+.footer-copy { font-size: 12px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">BotLead</a>
+    <a href="index.html" class="nav-back">&larr; Torna al sito</a>
+  </div>
+</nav>
+
+<main class="legal-page">
+  <h1>Privacy <span class="accent">Policy</span></h1>
+  <p class="legal-date">Ultimo aggiornamento: marzo 2026</p>
+
+  <div class="legal-card">
+    <p><strong>In breve:</strong> raccogliamo solo i dati necessari per fornirti il servizio. Non vendiamo nulla a terzi. Puoi cancellare tutto in qualsiasi momento.</p>
+  </div>
+
+  <h2>1. Titolare del trattamento</h2>
+  <p>Il titolare del trattamento dei dati personali e Mentis Digital. Per qualsiasi richiesta relativa alla privacy, puoi scriverci a <a href="mailto:info@mentisdigital.com">info@mentisdigital.com</a>.</p>
+
+  <h2>2. Dati raccolti</h2>
+  <p>Raccogliamo i seguenti dati:</p>
+  <ul>
+    <li><strong>Dati di registrazione:</strong> nome, email, nome attivita, settore</li>
+    <li><strong>Dati di utilizzo:</strong> log di accesso, pagine visitate, interazioni con la piattaforma</li>
+    <li><strong>Dati di prospect:</strong> informazioni pubblicamente disponibili sui siti web analizzati dal servizio</li>
+    <li><strong>Dati di pagamento:</strong> gestiti interamente da Stripe — non memorizziamo numeri di carta</li>
+  </ul>
+
+  <h2>3. Finalita del trattamento</h2>
+  <ul>
+    <li>Fornirti il servizio BotLead (ricerca prospect, analisi siti, generazione email)</li>
+    <li>Inviarti comunicazioni relative al servizio (aggiornamenti, scadenze, supporto)</li>
+    <li>Migliorare il prodotto tramite analisi aggregate e anonimizzate</li>
+  </ul>
+
+  <h2>4. Base giuridica</h2>
+  <p>Il trattamento si basa su: esecuzione del contratto (per l'erogazione del servizio), consenso (per comunicazioni marketing), e legittimo interesse (per miglioramenti del prodotto).</p>
+
+  <h2>5. Condivisione con terzi</h2>
+  <p>I tuoi dati possono essere condivisi esclusivamente con:</p>
+  <ul>
+    <li><strong>Stripe</strong> — per l'elaborazione dei pagamenti</li>
+    <li><strong>Provider di hosting</strong> — per l'infrastruttura tecnica</li>
+    <li><strong>API di ricerca</strong> — solo per l'analisi dei siti web pubblici dei prospect</li>
+  </ul>
+  <p>Non vendiamo, affittiamo o cediamo i tuoi dati personali a terzi per scopi di marketing.</p>
+
+  <h2>6. Conservazione dei dati</h2>
+  <p>I tuoi dati vengono conservati per la durata del rapporto contrattuale e per i 12 mesi successivi alla cancellazione dell'account, salvo obblighi di legge.</p>
+
+  <h2>7. I tuoi diritti (GDPR)</h2>
+  <p>Hai diritto a:</p>
+  <ul>
+    <li>Accedere ai tuoi dati personali</li>
+    <li>Rettificare dati inesatti</li>
+    <li>Cancellare i tuoi dati ("diritto all'oblio")</li>
+    <li>Limitare o opporti al trattamento</li>
+    <li>Portabilita dei dati</li>
+    <li>Revocare il consenso in qualsiasi momento</li>
+  </ul>
+  <p>Per esercitare questi diritti, scrivi a <a href="mailto:info@mentisdigital.com">info@mentisdigital.com</a>.</p>
+
+  <h2>8. Cookie</h2>
+  <p>Per informazioni sull'utilizzo dei cookie, consulta la nostra <a href="cookie-policy.html">Cookie Policy</a>.</p>
+
+  <h2>9. Modifiche</h2>
+  <p>Ci riserviamo di aggiornare questa policy. In caso di modifiche sostanziali, ti avviseremo via email.</p>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">BotLead</div>
+    <div class="footer-links">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="termini.html">Termini</a>
+      <a href="cookie-policy.html">Cookie Policy</a>
+    </div>
+    <div class="footer-copy">&copy; 2026 BotLead &middot; <a href="https://capu98.github.io/mentis-digital" target="_blank" style="color:var(--muted)">Mentis Digital</a></div>
+  </div>
+</footer>
+
+</body>
+</html>
