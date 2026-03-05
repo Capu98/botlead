@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BotLead — Trova aziende, legge il sito, scrive l'email. In automatico.</title>
+  <meta name="description" content="BotLead cerca aziende su Google, analizza ogni sito con AI e genera email iper-personalizzate che citano problemi reali. Gira sul tuo PC. Dati tuoi." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ═══════════════════════════════════════
+       RESET & TOKENS
+    ═══════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #0a0f1e;
+      --bg-deep:    #060a12;
+      --bg-card:    rgba(255,255,255,0.03);
+      --indigo:     #6366f1;
+      --indigo-dim: #4f52c8;
+      --indigo-gl:  rgba(99,102,241,0.35);
+      --cyan:       #06b6d4;
+      --cyan-gl:    rgba(6,182,212,0.25);
+      --green:      #22c55e;
+      --green-gl:   rgba(34,197,94,0.28);
+      --orange:     #f59e0b;
+      --orange-gl:  rgba(245,158,11,0.28);
+      --red:        #ef4444;
+      --text:       #f1f5f9;
+      --muted:      #94a3b8;
+      --border:     rgba(255,255,255,0.07);
+      --nav-h:      72px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════════════════════════
+       ANIMATIONS
+    ═══════════════════════════════════════ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 var(--indigo-gl); }
+      50%       { box-shadow: 0 0 0 8px rgba(99,102,241,0); }
+    }
+    @keyframes shimmer {
+      from { background-position: -200% center; }
+      to   { background-position: 200% center; }
+    }
+    @keyframes btnShimmer {
+      from { background-position: -200% center; }
+      to   { background-position: 200% center; }
+    }
+    @keyframes cyanPulse {
+      0%, 100% { opacity: 0.6; }
+      50%       { opacity: 1; }
+    }
+
+    /* ═══════════════════════════════════════
+       NAV
+    ═══════════════════════════════════════ */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      background: rgba(10,15,30,0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .nav-logo {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--indigo);
+      letter-spacing: -0.3px;
+    }
+
+    .nav-badge {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--indigo);
+      border: 1.5px solid var(--indigo);
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(99,102,241,0.1);
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .nav-links a {
+      font-size: 0.875rem;
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #fff !important;
+      background: var(--indigo);
+      padding: 8px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+
+    .nav-cta:hover {
+      background: var(--indigo-dim) !important;
+      box-shadow: 0 0 20px var(--indigo-gl);
+      color: #fff !important;
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+    }
+
+    /* ═══════════════════════════════════════
+       SECTION SHARED
+    ═══════════════════════════════════════ */
+    .section {
+      padding: 96px 24px;
+      scroll-margin-top: var(--nav-h);
+    }
+
+    .section-inner {
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 14px;
+    }
+
+    .section-h2 {
+      text-align: center;
+      font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    .section-sub {
+      text-align: center;
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 560px;
+      margin: 0 auto 56px;
+      line-height: 1.7;
+    }
+
+    /* ═══════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 96px 24px 80px;
+      position: relative;
+      overflow: hidden;
+      scroll-margin-top: var(--nav-h);
+    }
+
+    /* ambient orb */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -160px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(99,102,241,0.14) 0%, rgba(6,182,212,0.04) 45%, transparent 68%);
+      pointer-events: none;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: rgba(6,182,212,0.1);
+      border: 1px solid rgba(6,182,212,0.3);
+      color: var(--cyan);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding: 5px 14px;
+      border-radius: 999px;
+      margin-bottom: 28px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .hero-h1 {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 900;
+      line-height: 1.12;
+      max-width: 820px;
+      margin-bottom: 24px;
+      animation: fadeUp 0.6s 0.08s ease both;
+      background: linear-gradient(140deg, #f1f5f9 35%, #a5b4fc 75%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.15rem);
+      color: var(--muted);
+      max-width: 580px;
+      line-height: 1.75;
+      margin-bottom: 52px;
+      animation: fadeUp 0.6s 0.16s ease both;
+    }
+
+    /* COMING SOON BANNER */
+    .coming-soon-banner {
+      width: 100%;
+      max-width: 580px;
+      padding: 40px 32px;
+      background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(6,182,212,0.08));
+      border: 1.5px solid rgba(99,102,241,0.4);
+      border-radius: 16px;
+      text-align: center;
+      animation: fadeUp 0.6s 0.22s ease both;
+      box-shadow: 0 0 48px rgba(99,102,241,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .coming-soon-banner::after {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: 0;
+      right: 0;
+      height: 40%;
+      background: linear-gradient(180deg, transparent, rgba(99,102,241,0.06), transparent);
+      animation: scanLine 4s ease-in-out infinite;
+    }
+
+    @keyframes scanLine {
+      0%   { top: -40%; }
+      100% { top: 120%; }
+    }
+
+    .coming-soon-tag {
+      display: inline-block;
+      background: var(--indigo);
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      padding: 8px 28px;
+      border-radius: 50px;
+      margin-bottom: 16px;
+    }
+
+    .coming-soon-text {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .coming-soon-bottom {
+      max-width: 320px;
+      margin: 0 auto;
+      padding: 28px 24px;
+      position: relative;
+    }
+
+    .form-success {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 20px;
+      background: rgba(34,197,94,0.08);
+      border: 1px solid rgba(34,197,94,0.28);
+      border-radius: 10px;
+      color: #86efac;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    @media (max-width: 480px) {
+      .form-row { flex-direction: column; border-radius: 0; overflow: visible; box-shadow: none; }
+      .form-input { border-radius: 10px; border: 1px solid var(--border); margin-bottom: 10px; }
+      .btn-indigo { border-radius: 10px; width: 100%; text-align: center; }
+    }
+
+    /* ═══════════════════════════════════════
+       COME FUNZIONA — 5 STEPS
+    ═══════════════════════════════════════ */
+    #come-funziona { scroll-margin-top: var(--nav-h); }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 56px;
+    }
+
+    .step {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px 28px;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+
+    .step:hover {
+      border-color: rgba(99,102,241,0.35);
+      box-shadow: 0 4px 28px rgba(99,102,241,0.08);
+    }
+
+    .step-zero {
+      border-color: rgba(6,182,212,0.3);
+      background: rgba(6,182,212,0.04);
+    }
+
+    .step-zero:hover {
+      border-color: var(--cyan);
+      box-shadow: 0 4px 28px var(--cyan-gl);
+    }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1.1rem;
+      background: rgba(99,102,241,0.15);
+      color: var(--indigo);
+      border: 1px solid rgba(99,102,241,0.25);
+    }
+
+    .step-zero .step-num {
+      background: rgba(6,182,212,0.12);
+      color: var(--cyan);
+      border-color: rgba(6,182,212,0.25);
+    }
+
+    .step-body { flex: 1; }
+
+    .step-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .step-new {
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      background: rgba(6,182,212,0.12);
+      color: var(--cyan);
+      border: 1px solid rgba(6,182,212,0.28);
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    .step-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* problem detector placeholder */
+    .placeholder-box {
+      width: 100%;
+      height: 400px;
+      background: #0f172a;
+      border: 1px solid rgba(99,102,241,0.3);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #334155;
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      box-shadow: 0 0 36px rgba(99,102,241,0.06);
+    }
+
+    @media (max-width: 640px) {
+      .step { flex-direction: column; gap: 14px; }
+    }
+
+    /* ═══════════════════════════════════════
+       COSA RISOLVE — 3 PAIN CARD
+    ═══════════════════════════════════════ */
+    #cosa-risolve {
+      background: var(--bg-deep);
+      scroll-margin-top: var(--nav-h);
+    }
+
+    .pain-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .pain-card {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 24px;
+      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+    }
+
+    .pain-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(99,102,241,0.4);
+      box-shadow: 0 8px 32px rgba(99,102,241,0.1);
+    }
+
+    .pain-icon { font-size: 2rem; margin-bottom: 16px; }
+
+    .pain-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #f1f5f9;
+    }
+
+    .pain-problem {
+      font-size: 0.875rem;
+      color: #ef4444;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .pain-solution {
+      font-size: 0.875rem;
+      color: #86efac;
+      line-height: 1.5;
+    }
+
+    .pain-divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+      margin: 14px 0;
+    }
+
+    /* ═══════════════════════════════════════
+       RISPARMIO — ROI COUNTER
+    ═══════════════════════════════════════ */
+    #risparmio { scroll-margin-top: var(--nav-h); }
+
+    .roi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .roi-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(99,102,241,0.25);
+      border-radius: 18px;
+      padding: 36px 28px;
+      text-align: center;
+      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .roi-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(99,102,241,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .roi-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--indigo);
+      box-shadow: 0 12px 44px var(--indigo-gl);
+    }
+
+    .roi-who {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .roi-number {
+      font-size: clamp(2.4rem, 5vw, 3.2rem);
+      font-weight: 900;
+      color: var(--indigo);
+      line-height: 1;
+      margin-bottom: 4px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .roi-euro { font-size: 1.4rem; font-weight: 700; vertical-align: top; margin-top: 6px; display: inline-block; }
+
+    .roi-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .roi-divider {
+      width: 40px;
+      height: 2px;
+      background: rgba(99,102,241,0.3);
+      margin: 0 auto 20px;
+      border-radius: 2px;
+    }
+
+    .roi-detail {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .roi-multiplier {
+      display: inline-block;
+      margin-top: 14px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #86efac;
+      background: rgba(34,197,94,0.1);
+      border: 1px solid rgba(34,197,94,0.25);
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+
+    /* ═══════════════════════════════════════
+       CONFRONTO
+    ═══════════════════════════════════════ */
+    #confronto {
+      background: var(--bg-deep);
+      scroll-margin-top: var(--nav-h);
+    }
+
+    .comparison-slider {
+      width: 100%;
+      height: 400px;
+      background: #0f172a;
+      border: 1px solid rgba(99,102,241,0.3);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #334155;
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      margin-bottom: 56px;
+      box-shadow: 0 0 36px rgba(99,102,241,0.06);
+    }
+
+    /* competitor table */
+    .comp-table-wrap {
+      overflow-x: auto;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 16px 20px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      font-weight: 700;
+      font-size: 0.85rem;
+      background: rgba(255,255,255,0.02);
+      color: var(--muted);
+    }
+
+    th.col-hero {
+      background: var(--indigo);
+      color: #fff;
+      border-color: var(--indigo);
+      border-radius: 0;
+    }
+
+    td.col-hero {
+      color: var(--text);
+      background: rgba(99,102,241,0.06);
+      border-color: rgba(99,102,241,0.2);
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .comp-check { color: #86efac; font-size: 1.1rem; }
+    .comp-x     { color: #ef4444; font-size: 1.1rem; }
+    .comp-warn  { color: #fcd34d; font-size: 1rem; }
+
+    td:first-child {
+      text-align: left;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    /* ═══════════════════════════════════════
+       FAMIGLIA BOT
+    ═══════════════════════════════════════ */
+    #famiglia {
+      background: var(--bg-deep);
+      scroll-margin-top: var(--nav-h);
+    }
+
+    .bot-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 768px) {
+      .bot-grid { grid-template-columns: 1fr; max-width: 440px; }
+    }
+
+    .bot-card {
+      background: rgba(255,255,255,0.03);
+      border-radius: 16px;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+    }
+
+    .bot-card-green  { border: 1px solid rgba(34,197,94,0.3); }
+    .bot-card-orange { border: 1px solid rgba(245,158,11,0.3); }
+    .bot-card-indigo {
+      border: 1.5px solid rgba(99,102,241,0.45);
+      box-shadow: 0 0 24px rgba(99,102,241,0.1);
+      background: rgba(99,102,241,0.04);
+    }
+
+    .bot-card-green:hover  { transform: translateY(-5px); border-color: var(--green);  box-shadow: 0 10px 36px var(--green-gl); }
+    .bot-card-orange:hover { transform: translateY(-5px); border-color: var(--orange); box-shadow: 0 10px 36px var(--orange-gl); }
+    .bot-card-indigo:hover { transform: translateY(-5px); border-color: var(--indigo); box-shadow: 0 10px 44px var(--indigo-gl); }
+
+    .bot-icon { font-size: 2rem; }
+    .bot-name { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; }
+    .bot-tagline { font-size: 0.875rem; color: var(--muted); line-height: 1.65; flex: 1; }
+
+    .bot-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 4px 11px;
+      border-radius: 999px;
+      width: fit-content;
+    }
+
+    .badge-green  { background: rgba(34,197,94,0.1);  color: #86efac; border: 1px solid rgba(34,197,94,0.25); }
+    .badge-orange { background: rgba(245,158,11,0.1); color: #fcd34d; border: 1px solid rgba(245,158,11,0.25); }
+    .badge-indigo {
+      background: rgba(99,102,241,0.12);
+      color: #a5b4fc;
+      border: 1px solid rgba(99,102,241,0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    .badge-indigo::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      background-size: 200% auto;
+      animation: shimmer 2.8s linear infinite;
+    }
+
+    .bot-link {
+      font-size: 0.84rem;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: gap 0.2s, opacity 0.2s;
+      margin-top: 4px;
+    }
+
+    .bot-card-green  .bot-link { color: var(--green); }
+    .bot-card-orange .bot-link { color: var(--orange); }
+    .bot-link:hover { gap: 9px; opacity: 0.85; }
+
+    .bot-no-link {
+      font-size: 0.79rem;
+      color: #334155;
+      font-style: italic;
+      margin-top: 4px;
+    }
+
+    /* ═══════════════════════════════════════
+       CTA FINALE WAITLIST
+    ═══════════════════════════════════════ */
+    #waitlist-bottom {
+      scroll-margin-top: var(--nav-h);
+      padding: 104px 24px;
+      text-align: center;
+      background: linear-gradient(180deg, var(--bg) 0%, #1e1b4b 50%, #312e81 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #waitlist-bottom::before {
+      content: '';
+      position: absolute;
+      bottom: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .cta-h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .cta-sub {
+      color: rgba(241,245,249,0.7);
+      font-size: 1.05rem;
+      max-width: 520px;
+      margin: 0 auto 44px;
+      line-height: 1.7;
+      position: relative;
+    }
+
+    .cta-form-wrap {
+      max-width: 520px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .cta-form-row {
+      display: flex;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 0 0 1.5px rgba(99,102,241,0.4), 0 0 32px rgba(99,102,241,0.15);
+      transition: box-shadow 0.2s;
+    }
+
+    .cta-form-row:focus-within {
+      box-shadow: 0 0 0 2px var(--indigo), 0 0 40px var(--indigo-gl);
+    }
+
+    .cta-input {
+      flex: 1;
+      background: rgba(255,255,255,0.07);
+      border: none;
+      outline: none;
+      padding: 18px 20px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      min-width: 0;
+    }
+
+    .cta-input::placeholder { color: #64748b; }
+
+    .cta-btn {
+      background: var(--indigo);
+      border: none;
+      padding: 18px 26px;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.2s;
+    }
+
+    .cta-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+      background-size: 200% auto;
+      opacity: 0;
+    }
+
+    .cta-btn:hover { background: var(--indigo-dim); }
+    .cta-btn:hover::after { opacity: 1; animation: btnShimmer 0.7s linear; }
+
+    .cta-note {
+      margin-top: 14px;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .cta-note strong { color: rgba(165,180,252,0.8); }
+
+    .cta-success {
+      display: none;
+      margin-top: 20px;
+      padding: 16px 24px;
+      background: rgba(34,197,94,0.1);
+      border: 1px solid rgba(34,197,94,0.3);
+      border-radius: 12px;
+      color: #86efac;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    @media (max-width: 480px) {
+      .cta-form-row { flex-direction: column; border-radius: 0; overflow: visible; box-shadow: none; }
+      .cta-input { border-radius: 10px; border: 1px solid rgba(99,102,241,0.4); margin-bottom: 10px; }
+      .cta-btn { border-radius: 10px; padding: 16px 20px; }
+    }
+
+    /* ═══════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════ */
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: #334155;
+    }
+
+    footer a {
+      color: #475569;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    footer a:hover { color: var(--indigo); }
+    .sep { margin: 0 8px; opacity: 0.35; }
+
+    /* ═══════════════════════════════════════
+       UTILITIES
+    ═══════════════════════════════════════ */
+    .text-indigo { color: var(--indigo); }
+    .text-cyan   { color: var(--cyan); }
+  </style>
+</head>
+<body>
+
+<!-- ╔══════════════════════════════════════╗
+     ║  NAV                                 ║
+     ╚══════════════════════════════════════╝ -->
+<nav>
+  <a class="nav-brand" href="#">
+    <span class="nav-logo">BotLead</span>
+    <span class="nav-badge">Beta</span>
+  </a>
+
+  <div class="nav-links">
+    <a href="#come-funziona">Come funziona</a>
+    <a href="#cosa-risolve">Cosa risolve</a>
+    <a href="#risparmio">Risparmio</a>
+    <a href="#famiglia">Famiglia</a>
+    <a class="nav-cta" href="#waitlist">Coming Soon</a>
+  </div>
+</nav>
+
+<!-- ╔══════════════════════════════════════╗
+     ║  HERO                                ║
+     ╚══════════════════════════════════════╝ -->
+<section class="hero" id="hero">
+
+  <span class="hero-tag">Per agenzie e consulenti che fanno outreach B2B</span>
+
+  <h1 class="hero-h1">
+    Il prospect capisce in 3 secondi<br />se hai guardato il suo sito.<br />
+    <span class="text-indigo">BotLead lo fa per te.</span>
+  </h1>
+
+  <p class="hero-sub">
+    Cerca aziende su Google, legge ogni sito, scrive email che citano<br />
+    problemi reali. Non template — ricerca vera.
+  </p>
+
+  <div class="coming-soon-banner" id="waitlist">
+    <span class="coming-soon-tag">COMING SOON</span>
+    <p class="coming-soon-text">Stiamo preparando il lancio. Resta sintonizzato.</p>
+  </div>
+
+</section>
+
+<!-- ╔══════════════════════════════════════╗
+     ║  COSA FA — 5 STEPS                   ║
+     ╚══════════════════════════════════════╝ -->
+<section class="section" id="come-funziona">
+  <div class="section-inner">
+    <p class="section-label">Il processo</p>
+    <h2 class="section-h2">Da una nicchia e una città<br />all'email inviata in automatico.</h2>
+    <p class="section-sub">Cinque passi. Nessuno manuale. Ogni email esce con il nome dell'azienda, i problemi del loro sito, la tua firma.</p>
+
+    <div class="steps">
+
+      <div class="step step-zero">
+        <div class="step-num">0</div>
+        <div class="step-body">
+          <div class="step-title">
+            Scrivi nicchia e città. Lui cerca.
+            <span class="step-new">Nuovo</span>
+          </div>
+          <p class="step-desc">
+            BotLead interroga Google e restituisce aziende reali con sito web, già pronte da contattare.
+            Nessuna lista da comprare, nessuna ricerca su LinkedIn, nessun CSV da importare.
+          </p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Legge il sito. Non lo sfoglia — lo legge.</div>
+          <p class="step-desc">
+            Visita ogni URL ed estrae headline, prodotti, CTA, data copyright, presenza HTTPS,
+            ottimizzazione mobile, contatti raggiungibili. Quello che vedi tu in 5 minuti — lui lo fa in secondi.
+          </p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Seleziona i problemi che contano.</div>
+          <p class="step-desc">
+            Non elenca tutto quello che non va. Sceglie i 2-3 problemi più evidenti e verificabili —
+            quelli che un titolare capisce al volo e che dimostrano che hai guardato davvero.
+          </p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Scrive il testo. Cita quello che ha trovato.</div>
+          <p class="step-desc">
+            Il messaggio menziona il copyright del 2014, il numero non cliccabile da telefono,
+            il layout rotto da mobile. Il prospect legge e pensa: <em>questo ha guardato il mio sito</em>.
+            Non: l'ennesimo copy-paste.
+          </p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Invia. Registra. Non disturba.</div>
+          <p class="step-desc">
+            Max 50 email al giorno, pause casuali tra i messaggi per non finire nello spam.
+            Ogni invio registrato in Excel locale: stato, data, risposta, follow-up pianificato.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="placeholder-box" id="problem-detector"></div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗
+     ║  COSA RISOLVE — 3 PAIN              ║
+     ╚══════════════════════════════════════╝ -->
+<section class="section" id="cosa-risolve">
+  <div class="section-inner">
+    <p class="section-label">I problemi reali</p>
+    <h2 class="section-h2">Tre problemi che ti costano clienti ogni giorno.</h2>
+    <p class="section-sub">Scrivi email a mano, non ricevi risposte, paghi stack di tool che si sovrappongono.</p>
+
+    <div class="pain-grid">
+
+      <div class="pain-card">
+        <div class="pain-icon">⏳</div>
+        <div class="pain-title">Ore sprecate su ogni email</div>
+        <div class="pain-problem">
+          Prima: 3 ore per 10 email personalizzate a mano.
+          Ricerca, apertura siti, copia dati, scrivi, controlla.
+        </div>
+        <div class="pain-divider"></div>
+        <div class="pain-solution">
+          Con BotLead: 10 minuti di revisione per 50 email già generate,
+          già personalizzate, già pronte da inviare.
+        </div>
+      </div>
+
+      <div class="pain-card">
+        <div class="pain-icon">📭</div>
+        <div class="pain-title">Invisibile nella inbox</div>
+        <div class="pain-problem">
+          Email generiche: 1–2% di tasso di risposta.
+          Il prospect le riconosce al volo e le cestina.
+        </div>
+        <div class="pain-divider"></div>
+        <div class="pain-solution">
+          Email BotLead: 8–15% di risposta nei test pilota.
+          Citare un problema reale del sito cambia tutto.
+        </div>
+      </div>
+
+      <div class="pain-card">
+        <div class="pain-icon">💸</div>
+        <div class="pain-title">Stack di tool a pagamento</div>
+        <div class="pain-problem">
+          Apollo €99/mese + Lemlist €69/mese + Hunter €49/mese
+          = €217 al mese per fare outreach.
+        </div>
+        <div class="pain-divider"></div>
+        <div class="pain-solution">
+          BotLead: un tool solo. Gira sul tuo PC.
+          I dati restano tuoi. Nessun abbonamento a cascata.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗
+     ║  RISPARMIO — ROI COUNTER             ║
+     ╚══════════════════════════════════════╝ -->
+<section class="section" id="risparmio">
+  <div class="section-inner">
+    <p class="section-label">Il calcolo</p>
+    <h2 class="section-h2">Il math è semplice.</h2>
+    <p class="section-sub">Con 50 email/giorno, 10% di risposta, ticket medio €1.000.</p>
+
+    <div class="roi-grid">
+
+      <div class="roi-card" id="roi-freelance" data-target="2000">
+        <div class="roi-who">Freelance</div>
+        <div class="roi-number">
+          <span class="roi-euro">€</span><span class="roi-count">0</span>
+        </div>
+        <div class="roi-label">entrate stimate / mese</div>
+        <div class="roi-divider"></div>
+        <div class="roi-detail">
+          ~4 nuovi clienti al mese.<br />
+          ROI sul costo di BotLead:
+        </div>
+        <span class="roi-multiplier">40x</span>
+      </div>
+
+      <div class="roi-card" id="roi-agenzia" data-target="24000">
+        <div class="roi-who">Agenzia</div>
+        <div class="roi-number">
+          <span class="roi-euro">€</span><span class="roi-count">0</span>
+        </div>
+        <div class="roi-label">entrate stimate / mese</div>
+        <div class="roi-divider"></div>
+        <div class="roi-detail">
+          ~12 clienti attivi su 3 verticali.<br />
+          ROI sul costo di BotLead:
+        </div>
+        <span class="roi-multiplier">241x</span>
+      </div>
+
+      <div class="roi-card" id="roi-startup" data-target="25000">
+        <div class="roi-who">Startup B2B</div>
+        <div class="roi-number">
+          <span class="roi-euro">€</span><span class="roi-count">0</span>
+        </div>
+        <div class="roi-label">pipeline generata / mese</div>
+        <div class="roi-divider"></div>
+        <div class="roi-detail">
+          ~5 deal qualificati al mese.<br />
+          ROI sul costo di BotLead:
+        </div>
+        <span class="roi-multiplier">124x</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗
+     ║  CONFRONTO                           ║
+     ╚══════════════════════════════════════╝ -->
+<section class="section" id="confronto">
+  <div class="section-inner">
+    <p class="section-label">Perché funziona</p>
+    <h2 class="section-h2">Email generica vs Email BotLead</h2>
+    <p class="section-sub">La differenza non è il tono. È la prova che hai guardato.</p>
+
+    <div class="comparison-slider">[Comparison Slider — Before / After]</div>
+
+    <div class="comp-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="text-align:left;">Funzionalità</th>
+            <th class="col-hero">BotLead</th>
+            <th>Apollo<br /><small style="font-weight:400;color:#64748b;">€99/mese</small></th>
+            <th>Lemlist<br /><small style="font-weight:400;color:#64748b;">€69/mese</small></th>
+            <th>Clay<br /><small style="font-weight:400;color:#64748b;">€149/mese</small></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Legge il sito del prospect</td>
+            <td class="col-hero"><span class="comp-check">✓</span></td>
+            <td><span class="comp-x">✗</span></td>
+            <td><span class="comp-x">✗</span></td>
+            <td><span class="comp-warn">⚠</span></td>
+          </tr>
+          <tr>
+            <td>Email site-aware (cita problemi reali)</td>
+            <td class="col-hero"><span class="comp-check">✓</span></td>
+            <td><span class="comp-x">✗</span></td>
+            <td><span class="comp-x">✗</span></td>
+            <td><span class="comp-x">✗</span></td>
+          </tr>
+          <tr>
+            <td>Dati sul tuo PC (zero cloud)</td>
+            <td class="col-hero"><span class="comp-check">✓</span></td>
+            <td><span class="comp-x">✗</span></td>
+            <td><span class="comp-x">✗</span></td>
+            <td><span class="comp-x">✗</span></td>
+          </tr>
+          <tr>
+            <td>Trova aziende da zero (nessuna lista)</td>
+            <td class="col-hero"><span class="comp-check">✓</span></td>
+            <td><span class="comp-check">✓</span></td>
+            <td><span class="comp-x">✗</span></td>
+            <td><span class="comp-warn">⚠</span></td>
+          </tr>
+          <tr>
+            <td>Prezzo</td>
+            <td class="col-hero" style="font-weight:700;color:#a5b4fc;">Coming soon</td>
+            <td>€99/mese</td>
+            <td>€69/mese</td>
+            <td>€149/mese</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗
+     ║  FAMIGLIA BOT                        ║
+     ╚══════════════════════════════════════╝ -->
+<section class="section" id="famiglia">
+  <div class="section-inner">
+    <p class="section-label">L'ecosistema</p>
+    <h2 class="section-h2">La famiglia Bot</h2>
+    <p class="section-sub">Tre tool AI. Un ecosistema per far crescere il tuo business.</p>
+
+    <div class="bot-grid">
+
+      <div class="bot-card bot-card-green">
+        <div class="bot-icon">🤖</div>
+        <div class="bot-name">BotReady</div>
+        <p class="bot-tagline">Chatbot AI per ristoranti e PMI — risponde ai clienti 24/7 su WhatsApp e Telegram</p>
+        <span class="bot-badge badge-green">✅ Disponibile ora</span>
+        <a class="bot-link" href="https://capu98.github.io/botready" target="_blank" rel="noopener">
+          Scopri BotReady →
+        </a>
+      </div>
+
+      <div class="bot-card bot-card-orange">
+        <div class="bot-icon">📱</div>
+        <div class="bot-name">BotSocial</div>
+        <p class="bot-tagline">Gestione social media automatizzata per PMI — 5 post a settimana, zero sforzo</p>
+        <span class="bot-badge badge-orange">⏳ Coming soon</span>
+        <a class="bot-link" href="https://capu98.github.io/botsocial" target="_blank" rel="noopener">
+          Scopri BotSocial →
+        </a>
+      </div>
+
+      <div class="bot-card bot-card-indigo">
+        <div class="bot-icon">🎯</div>
+        <div class="bot-name">BotLead</div>
+        <p class="bot-tagline">Lead generation AI — trova aziende, legge i loro siti, scrive email che citano problemi reali</p>
+        <span class="bot-badge badge-indigo">⏳ Coming soon</span>
+        <span class="bot-no-link">← Sei già qui</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗
+     ║  CTA FINALE WAITLIST                 ║
+     ╚══════════════════════════════════════╝ -->
+<section id="waitlist-bottom">
+  <h2 class="cta-h2">Presto disponibile.</h2>
+  <p class="cta-sub">
+    Stiamo ultimando gli ultimi dettagli.<br />
+    BotLead sarà disponibile a breve.
+  </p>
+  <div class="coming-soon-banner coming-soon-bottom">
+    <span class="coming-soon-tag">COMING SOON</span>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗
+     ║  FOOTER                              ║
+     ╚══════════════════════════════════════╝ -->
+<footer>
+  © 2026 BotLead
+  <span class="sep">·</span>
+  <a href="privacy.html">Privacy</a>
+  <span class="sep">·</span>
+  <a href="termini.html">Termini</a>
+  <span class="sep">·</span>
+  by <a href="https://capu98.github.io/mentis-digital" target="_blank" rel="noopener">Mentis Digital</a>
+</footer>
+
+<!-- ╔══════════════════════════════════════╗
+     ║  JS                                  ║
+     ╚══════════════════════════════════════╝ -->
+<script>
+  /* ── (forms removed — coming soon mode) ─── */
+
+  /* ── ROI COUNTER (IntersectionObserver) ─ */
+  function easeOutQuart(t) {
+    return 1 - Math.pow(1 - t, 4);
+  }
+
+  function animateCounter(el, target, duration) {
+    var start = null;
+
+    function step(timestamp) {
+      if (!start) start = timestamp;
+      var elapsed  = timestamp - start;
+      var progress = Math.min(elapsed / duration, 1);
+      var value    = Math.round(easeOutQuart(progress) * target);
+      el.textContent = value.toLocaleString('it-IT');
+      if (progress < 1) requestAnimationFrame(step);
+    }
+
+    requestAnimationFrame(step);
+  }
+
+  var roiCards = document.querySelectorAll('[data-target]');
+  var animated = new Set();
+
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting && !animated.has(entry.target.id)) {
+        animated.add(entry.target.id);
+        var card   = entry.target;
+        var target = parseInt(card.getAttribute('data-target'), 10);
+        var countEl = card.querySelector('.roi-count');
+        if (countEl) animateCounter(countEl, target, 2000);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  roiCards.forEach(function (card) { observer.observe(card); });
+</script>
+
+<script src="effects-3d-detector.js"></script>
+</body>
+</html>
