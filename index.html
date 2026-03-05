@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BotLead — Trova aziende, legge il sito, scrive l'email. In automatico.</title>
-  <meta name="description" content="BotLead cerca aziende su Google, analizza ogni sito con AI e genera email iper-personalizzate che citano problemi reali. Gira sul tuo PC. Dati tuoi." />
+  <meta name="description" content="BotLead cerca aziende su Google, analizza ogni sito e genera email iper-personalizzate che citano problemi reali. Gira sul tuo PC. Dati tuoi." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -1266,9 +1267,14 @@
   </p>
   <div class="cta-form-wrap">
     <form id="waitlist-form" action="https://formspree.io/f/xzdankag" method="POST">
+      <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
       <div class="cta-form-row">
         <input class="cta-input" type="email" name="email" placeholder="la-tua@email.it" required autocomplete="email" />
         <button class="cta-btn" type="submit">Voglio l'accesso →</button>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:8px;margin-top:10px;justify-content:center;">
+        <input type="checkbox" id="privacy-check" required style="margin-top:3px;accent-color:var(--indigo);min-width:16px;min-height:16px;">
+        <label for="privacy-check" style="font-size:0.75rem;color:var(--muted);line-height:1.4;cursor:pointer;">Ho letto e accetto la <a href="privacy.html" style="color:var(--indigo);text-decoration:underline;">Privacy Policy</a></label>
       </div>
       <input type="hidden" name="_subject" value="Nuovo iscritto waitlist BotLead" />
       <input type="hidden" name="_next" value="https://capu98.github.io/botlead/?ok=1" />
@@ -1283,15 +1289,19 @@
      ║  FOOTER                              ║
      ╚══════════════════════════════════════╝ -->
 <footer>
-  © 2026 BotLead
+  © 2026 BotLead. Tutti i diritti riservati.
   <span class="sep">·</span>
-  <a href="privacy.html">Privacy</a>
+  Realizzato da <a href="https://capu98.github.io/mentis-digital/" target="_blank" rel="noopener">Mentis</a>
+  <span class="sep">·</span>
+  info@mentisdigital.it
+  <br style="margin-top:8px">
+  <a href="privacy.html">Privacy Policy</a>
   <span class="sep">·</span>
   <a href="termini.html">Termini</a>
   <span class="sep">·</span>
   <a href="cookie-policy.html">Cookie Policy</a>
   <span class="sep">·</span>
-  by <a href="https://capu98.github.io/mentis-digital" target="_blank" rel="noopener">Mentis Digital</a>
+  <a href="javascript:void(0)" onclick="manageCookies()">Gestisci cookie</a>
 </footer>
 
 <!-- ╔══════════════════════════════════════╗
@@ -1367,5 +1377,46 @@
 <script src="effects-unique.js"></script>
 <script src="effects-3d-detector.js"></script>
 <script src="effects-premium.js"></script>
+
+<script>
+  // Cookie banner
+  function acceptCookies() {
+    localStorage.setItem('botlead-cookies', 'accepted');
+    document.getElementById('cookie-banner').style.display = 'none';
+    loadPlausible();
+  }
+  function rejectCookies() {
+    localStorage.setItem('botlead-cookies', 'rejected');
+    document.getElementById('cookie-banner').style.display = 'none';
+  }
+  function manageCookies() {
+    document.getElementById('cookie-banner').style.display = 'flex';
+  }
+  function loadPlausible() {
+    var s = document.createElement('script');
+    s.defer = true;
+    s.dataset.domain = 'capu98.github.io';
+    s.src = 'https://plausible.io/js/script.js';
+    document.head.appendChild(s);
+  }
+  window.addEventListener('DOMContentLoaded', function() {
+    var choice = localStorage.getItem('botlead-cookies');
+    if (!choice) {
+      document.getElementById('cookie-banner').style.display = 'flex';
+    } else if (choice === 'accepted') {
+      loadPlausible();
+    }
+  });
+</script>
+
+<!-- Cookie Banner -->
+<div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(10,15,30,.97);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:20px 24px;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;">
+  <p style="font-size:14px;color:var(--text);margin:0;flex:1;min-width:260px;">Usiamo cookie tecnici e, con il tuo consenso, analytics per migliorare il servizio. <a href="cookie-policy.html" style="color:var(--indigo);text-decoration:underline;">Cookie Policy</a></p>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;">
+    <button onclick="acceptCookies()" style="padding:10px 20px;background:var(--indigo);color:#fff;border:none;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;">Accetta tutto</button>
+    <button onclick="rejectCookies()" style="padding:10px 20px;background:rgba(255,255,255,.07);color:var(--text);border:1px solid var(--border);border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;">Rifiuta tutto</button>
+  </div>
+</div>
+
 </body>
 </html>
