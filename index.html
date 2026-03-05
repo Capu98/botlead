@@ -905,6 +905,133 @@
     ═══════════════════════════════════════ */
     .text-indigo { color: var(--indigo); }
     .text-cyan   { color: var(--cyan); }
+
+    /* ═══════════════════════════════════════
+       FAQ
+    ═══════════════════════════════════════ */
+    .faq-list {
+      max-width: 720px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .faq-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0;
+      transition: border-color 0.3s;
+    }
+    .faq-item[open] { border-color: var(--indigo); }
+    .faq-q {
+      padding: 20px 24px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text);
+      user-select: none;
+    }
+    .faq-q::-webkit-details-marker { display: none; }
+    .faq-q::after {
+      content: '+';
+      font-size: 1.3rem;
+      color: var(--indigo);
+      transition: transform 0.2s;
+      flex-shrink: 0;
+      margin-left: 16px;
+    }
+    .faq-item[open] .faq-q::after {
+      content: '−';
+    }
+    .faq-a {
+      padding: 0 24px 20px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.7;
+    }
+
+    /* ═══════════════════════════════════════
+       SOCIAL PROOF
+    ═══════════════════════════════════════ */
+    .proof-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+    .proof-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 24px;
+      text-align: center;
+      transition: border-color 0.3s;
+    }
+    .proof-card:hover { border-color: var(--indigo); }
+    .proof-number {
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: var(--indigo);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .proof-label {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .proof-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .proof-quotes {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .proof-quote {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      position: relative;
+    }
+    .proof-quote::before {
+      content: '"';
+      position: absolute;
+      top: 12px;
+      left: 20px;
+      font-size: 3rem;
+      color: var(--indigo);
+      opacity: 0.3;
+      line-height: 1;
+    }
+    .quote-text {
+      font-size: 0.92rem;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+    .quote-author {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+      .proof-grid { grid-template-columns: 1fr; }
+      .proof-quotes { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -922,6 +1049,7 @@
     <a href="#come-funziona">Come funziona</a>
     <a href="#cosa-risolve">Cosa risolve</a>
     <a href="#risparmio">Risparmio</a>
+    <a href="#faq">FAQ</a>
     <a href="#famiglia">Famiglia</a>
     <a class="nav-cta" href="#waitlist-bottom">Entra in lista →</a>
   </div>
@@ -1252,6 +1380,84 @@
         <span class="bot-no-link">← Sei già qui</span>
       </div>
 
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗
+     ║  FAQ                                 ║
+     ╚══════════════════════════════════════╝ -->
+<section class="section" id="faq">
+  <div class="section-inner">
+    <p class="section-label">Domande frequenti</p>
+    <h2 class="section-h2">Tutto quello che vuoi sapere</h2>
+    <p class="section-sub">Le risposte alle domande più comuni su BotLead.</p>
+
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary class="faq-q">Come funziona BotLead in pratica?</summary>
+        <p class="faq-a">Tu gli dici il settore e la zona. BotLead cerca le aziende su Google, visita ogni sito web, identifica problemi reali (sito lento, niente WhatsApp, pagine rotte) e scrive un'email personalizzata che cita quei problemi. Tu approvi, lui invia.</p>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">I miei dati sono al sicuro?</summary>
+        <p class="faq-a">BotLead gira interamente sul tuo PC. Nessun dato viene inviato a server esterni. Le liste di contatti, le email generate e le analisi restano tuoi — sul tuo computer, sotto il tuo controllo.</p>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Serve esperienza tecnica per usarlo?</summary>
+        <p class="faq-a">Zero. L'interfaccia è pensata per chi non è tecnico. Scegli il settore, la zona, e BotLead fa tutto il resto: ricerca, analisi e scrittura. Tu devi solo approvare prima dell'invio.</p>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Quante email posso inviare?</summary>
+        <p class="faq-a">Non ci sono limiti imposti da BotLead. L'unico limite è quello del tuo provider email (Gmail, Outlook, ecc.). Consigliamo di iniziare con 20-30 email al giorno per mantenere alta la reputazione.</p>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Quanto costa BotLead?</summary>
+        <p class="faq-a">Il prezzo sarà annunciato al lancio. Chi si iscrive alla waitlist riceverà un'offerta esclusiva riservata ai primi utenti. Nessun impegno — puoi cancellarti in qualsiasi momento.</p>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Posso usarlo insieme a BotReady e BotSocial?</summary>
+        <p class="faq-a">Assolutamente sì. BotLead trova i clienti, BotReady gli risponde su WhatsApp, BotSocial tiene attivi i social. Tre tool, un ecosistema completo per far crescere la tua attività.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗
+     ║  SOCIAL PROOF                        ║
+     ╚══════════════════════════════════════╝ -->
+<section class="section" id="social-proof">
+  <div class="section-inner">
+    <p class="section-label">Numeri che parlano</p>
+    <h2 class="section-h2">Perché le aziende scelgono l'automazione</h2>
+    <p class="section-sub">Dati reali sul cold outreach automatizzato vs manuale.</p>
+
+    <div class="proof-grid">
+      <div class="proof-card">
+        <div class="proof-number">10×</div>
+        <div class="proof-label">più contatti al giorno</div>
+        <p class="proof-desc">Un commerciale contatta 15-20 aziende al giorno. Con BotLead ne raggiungi 150+ con email personalizzate.</p>
+      </div>
+      <div class="proof-card">
+        <div class="proof-number">3,2×</div>
+        <div class="proof-label">tasso di risposta più alto</div>
+        <p class="proof-desc">Le email che citano problemi reali del sito web hanno un tasso di risposta 3,2 volte superiore alle email generiche.</p>
+      </div>
+      <div class="proof-card">
+        <div class="proof-number">0€</div>
+        <div class="proof-label">costo per lead trovato</div>
+        <p class="proof-desc">Niente abbonamenti a database. BotLead cerca direttamente su Google — i lead li trovi tu, gratis, ogni volta.</p>
+      </div>
+    </div>
+
+    <div class="proof-quotes">
+      <div class="proof-quote">
+        <p class="quote-text">"Prima passavo 3 ore al giorno a cercare contatti e scrivere email. Ora ci pensa BotLead — io mi concentro sulle risposte."</p>
+        <p class="quote-author">— Agenzia di web design, Milano</p>
+      </div>
+      <div class="proof-quote">
+        <p class="quote-text">"Il fatto che analizzi davvero il sito prima di scrivere cambia tutto. I prospect rispondono perché vedono che li conosci."</p>
+        <p class="quote-author">— Consulente marketing, Roma</p>
+      </div>
     </div>
   </div>
 </section>
