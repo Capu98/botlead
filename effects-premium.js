@@ -163,6 +163,7 @@
         'padding:5px 12px 5px 8px;',
         'font-size:11px;color:#64748b;',
         'white-space:nowrap;',
+        'max-width:220px;overflow:hidden;text-overflow:ellipsis;',
         'backdrop-filter:blur(8px);',
         '-webkit-backdrop-filter:blur(8px);',
         'pointer-events:none;',
@@ -195,11 +196,14 @@
       el.className = 'bl-badge';
       var dur = 5 + Math.random() * 2.5;
       el.style.setProperty('--d', dur + 's');
-      // Corridoi laterali: 0–17% a sinistra, 76–94% a destra
-      var left = Math.random() < 0.5
-        ? (1  + Math.random() * 16)
-        : (76 + Math.random() * 18);
-      el.style.left = left + '%';
+      // Corridoi laterali: sinistra 1–14%, destra via 'right' 1–14%
+      var isLeft = Math.random() < 0.5;
+      if (isLeft) {
+        el.style.left = (1 + Math.random() * 13) + '%';
+      } else {
+        el.style.right = (1 + Math.random() * 13) + '%';
+        el.style.left = 'auto';
+      }
       el.style.top  = (10 + Math.random() * 70) + '%';
       el.textContent = txt;
       wrap.appendChild(el);
