@@ -922,7 +922,7 @@
     <a href="#cosa-risolve">Cosa risolve</a>
     <a href="#risparmio">Risparmio</a>
     <a href="#famiglia">Famiglia</a>
-    <a class="nav-cta" href="#waitlist">Entra in lista →</a>
+    <a class="nav-cta" href="#waitlist-bottom">Entra in lista →</a>
   </div>
 </nav>
 
@@ -1264,8 +1264,18 @@
     Stiamo rilasciando BotLead in accesso anticipato.<br />
     Niente spam — una sola email quando è pronto. Promesso.
   </p>
-  <div class="coming-soon-banner coming-soon-bottom">
-    <span class="coming-soon-tag">COMING SOON</span>
+  <div class="cta-form-wrap">
+    <form id="waitlist-form" action="https://formspree.io/f/xpwzjobl" method="POST">
+      <div class="cta-form-row">
+        <input class="cta-input" type="email" name="email" placeholder="la-tua@email.it" required autocomplete="email" />
+        <button class="btn-indigo" type="submit">Voglio l'accesso →</button>
+      </div>
+      <input type="hidden" name="_subject" value="Nuovo iscritto waitlist BotLead" />
+      <input type="hidden" name="_next" value="https://capu98.github.io/botlead/?ok=1" />
+    </form>
+    <div class="form-success" id="form-success">
+      ✓ Sei in lista. Ti avvisiamo non appena BotLead è pronto.
+    </div>
   </div>
 </section>
 
@@ -1286,7 +1296,33 @@
      ║  JS                                  ║
      ╚══════════════════════════════════════╝ -->
 <script>
-  /* ── (forms removed — coming soon mode) ─── */
+  /* ── WAITLIST FORM ─────────────────────── */
+  var wForm = document.getElementById('waitlist-form');
+  if (wForm) {
+    wForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var data = new FormData(wForm);
+      fetch(wForm.action, { method: 'POST', body: data, headers: { Accept: 'application/json' } })
+        .then(function (r) {
+          if (r.ok) {
+            wForm.style.display = 'none';
+            document.getElementById('form-success').style.display = 'block';
+          } else {
+            alert('Errore nell\'invio. Riprova tra qualche secondo.');
+          }
+        })
+        .catch(function () { alert('Connessione non disponibile. Riprova.'); });
+    });
+  }
+  /* Gestione redirect da ?ok=1 */
+  if (window.location.search.includes('ok=1')) {
+    var wf = document.getElementById('waitlist-form');
+    var ws = document.getElementById('form-success');
+    if (wf) wf.style.display = 'none';
+    if (ws) ws.style.display = 'block';
+    var el = document.getElementById('waitlist-bottom');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  }
 
   /* ── ROI COUNTER (IntersectionObserver) ─ */
   function easeOutQuart(t) {
