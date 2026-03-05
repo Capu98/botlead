@@ -595,20 +595,13 @@
     }
 
     .comparison-slider {
-      width: 100%;
-      height: 400px;
-      background: #0f172a;
-      border: 1px solid rgba(99,102,241,0.3);
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #334155;
-      font-size: 0.875rem;
-      font-weight: 500;
-      letter-spacing: 0.05em;
       margin-bottom: 56px;
-      box-shadow: 0 0 36px rgba(99,102,241,0.06);
+    }
+
+    @media (max-width: 640px) {
+      .comparison-slider {
+        grid-template-columns: 1fr !important;
+      }
     }
 
     /* competitor table */

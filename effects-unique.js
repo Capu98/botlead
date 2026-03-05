@@ -403,32 +403,35 @@
     var container = document.querySelector('.comparison-slider');
     if (!container) return;
 
-    // Override placeholder styles
+    // Side-by-side layout — no drag bar
     container.style.cssText = [
-      'position:relative',
-      'height:400px',
-      'border-radius:14px',
-      'overflow:hidden',
-      'user-select:none',
-      'cursor:ew-resize',
-      'border:1px solid rgba(99,102,241,0.4)',
+      'display:grid',
+      'grid-template-columns:1fr 1fr',
+      'gap:16px',
+      'height:auto',
+      'border:none',
+      'background:transparent',
       'margin-bottom:56px',
-      'box-shadow:0 0 40px rgba(99,102,241,0.08)',
+      'box-shadow:none',
+      'color:inherit',
+      'font-size:inherit',
+      'align-items:start',
+      'letter-spacing:normal',
     ].join(';');
 
     container.innerHTML = '';
 
     /* LEFT — generic email */
     var left = mk('div', {
-      style: 'position:absolute;inset:0;background:#1e293b;',
+      style: 'background:#1e293b;border-radius:14px;border:1px solid rgba(239,68,68,0.25);overflow:hidden;',
     });
     left.innerHTML = [
-      '<div style="padding:28px 28px 24px;height:100%;box-sizing:border-box;">',
-      '  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">',
+      '<div style="padding:24px 24px 20px;">',
+      '  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">',
       '    <span style="background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:0.5px;">EMAIL GENERICA</span>',
-      '    <span style="background:rgba(239,68,68,0.12);color:#ef4444;font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;">Risposta media: 1–2%</span>',
+      '    <span style="background:rgba(239,68,68,0.12);color:#ef4444;font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;">Risposta: 1–2%</span>',
       '  </div>',
-      '  <div style="font-size:10px;color:#64748b;font-family:monospace;margin-bottom:14px;border-bottom:1px solid #334155;padding-bottom:8px;">Da: agenzia@example.com · A: info@ristorante.it</div>',
+      '  <div style="font-size:10px;color:#64748b;font-family:monospace;margin-bottom:14px;border-bottom:1px solid #334155;padding-bottom:8px;">Da: agenzia@example.com<br>A: info@ristorante.it</div>',
       '  <div style="font-size:13px;color:#94a3b8;line-height:1.75;">',
       '    <div style="font-weight:700;color:#cbd5e1;margin-bottom:10px;">Oggetto: Servizi di web design</div>',
       '    Gentile titolare,<br><br>',
@@ -440,20 +443,17 @@
     ].join('');
     container.appendChild(left);
 
-    /* RIGHT — BotLead email (clipped by handle — content pinned to container) */
-    var rightWrap = mk('div', {
-      style: 'position:absolute;inset:0;clip-path:inset(0 0 0 50%);',
-    });
+    /* RIGHT — BotLead email */
     var right = mk('div', {
-      style: 'position:absolute;inset:0;background:#130d2e;',
+      style: 'background:#130d2e;border-radius:14px;border:1px solid rgba(99,102,241,0.4);overflow:hidden;box-shadow:0 0 32px rgba(99,102,241,0.1);',
     });
     right.innerHTML = [
-      '<div style="padding:28px 28px 24px;height:100%;box-sizing:border-box;">',
-      '  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">',
+      '<div style="padding:24px 24px 20px;">',
+      '  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">',
       '    <span style="background:#4ade80;color:#052e16;font-size:10px;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:0.5px;">EMAIL BOTLEAD</span>',
-      '    <span style="background:rgba(74,222,128,0.12);color:#4ade80;font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;">Risposta media: 8–15%</span>',
+      '    <span style="background:rgba(74,222,128,0.12);color:#4ade80;font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;">Risposta: 8–15%</span>',
       '  </div>',
-      '  <div style="font-size:10px;color:#64748b;font-family:monospace;margin-bottom:14px;border-bottom:1px solid #312e81;padding-bottom:8px;">Da: agenzia@example.com · A: info@ristorante.it</div>',
+      '  <div style="font-size:10px;color:#64748b;font-family:monospace;margin-bottom:14px;border-bottom:1px solid #312e81;padding-bottom:8px;">Da: agenzia@example.com<br>A: info@ristorante.it</div>',
       '  <div style="font-size:13px;color:#c7d2fe;line-height:1.75;">',
       '    <div style="font-weight:700;color:#e0e7ff;margin-bottom:10px;">Oggetto: Ho notato 3 cose sul vostro sito</div>',
       '    Buongiorno,<br><br>',
@@ -463,70 +463,7 @@
       '  </div>',
       '</div>',
     ].join('');
-    rightWrap.appendChild(right);
-    container.appendChild(rightWrap);
-
-    /* Divider line */
-    var divider = mk('div', {
-      style: 'position:absolute;top:0;width:2px;height:100%;background:#6366f1;box-shadow:0 0 12px #6366f1,0 0 24px rgba(99,102,241,0.4);z-index:10;transform:translateX(-50%);pointer-events:none;',
-    });
-    container.appendChild(divider);
-
-    /* Handle circle */
-    var handle = mk('div', {
-      style: [
-        'position:absolute',
-        'top:50%',
-        'width:38px',
-        'height:38px',
-        'background:#6366f1',
-        'border-radius:50%',
-        'z-index:11',
-        'transform:translate(-50%,-50%)',
-        'display:flex',
-        'align-items:center',
-        'justify-content:center',
-        'box-shadow:0 0 18px rgba(99,102,241,0.6)',
-        'cursor:ew-resize',
-      ].join(';'),
-    });
-    handle.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 18l-6-6 6-6M15 6l6 6-6 6" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    container.appendChild(handle);
-
-    /* Label hints */
-    var lLeft = mk('div', {
-      textContent: '← Trascina',
-      style: 'position:absolute;bottom:14px;left:14px;font-size:10px;color:rgba(148,163,184,0.6);font-family:monospace;z-index:5;pointer-events:none;',
-    });
-    var lRight = mk('div', {
-      textContent: 'Trascina →',
-      style: 'position:absolute;bottom:14px;right:14px;font-size:10px;color:rgba(148,163,184,0.6);font-family:monospace;z-index:5;pointer-events:none;',
-    });
-    container.appendChild(lLeft);
-    container.appendChild(lRight);
-
-    /* Interaction */
-    var pct = 50;
-
-    function setPos(x) {
-      var rect = container.getBoundingClientRect();
-      pct = Math.max(8, Math.min(92, ((x - rect.left) / rect.width) * 100));
-      divider.style.left = pct + '%';
-      handle.style.left = pct + '%';
-      rightWrap.style.clipPath = 'inset(0 0 0 ' + pct + '%)';
-    }
-
-    // Init at 50%
-    requestAnimationFrame(function () {
-      setPos(container.getBoundingClientRect().left + container.offsetWidth * 0.5);
-    });
-
-    var dragging = false;
-    container.addEventListener('mousedown', function (e) { dragging = true; setPos(e.clientX); e.preventDefault(); });
-    window.addEventListener('mousemove', function (e) { if (dragging) setPos(e.clientX); });
-    window.addEventListener('mouseup', function () { dragging = false; });
-    container.addEventListener('touchstart', function (e) { setPos(e.touches[0].clientX); }, { passive: true });
-    container.addEventListener('touchmove', function (e) { setPos(e.touches[0].clientX); e.preventDefault(); }, { passive: false });
+    container.appendChild(right);
   }
 
 
