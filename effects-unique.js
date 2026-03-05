@@ -157,7 +157,7 @@
           { t: '[✓] Query: "ristoranti Milano sito web"',  c: '#4ade80' },
           { t: '[→] Trovati 847 risultati — filtro in corso...', c: '#a5b4fc' },
           { t: '[→] Siti con contatti verificati: 312',    c: '#a5b4fc' },
-          { t: '[✓] 50 aziende pronte per analisi AI',     c: '#4ade80' },
+          { t: '[✓] 50 aziende pronte per la scansione',    c: '#4ade80' },
         ];
         var li = 0;
         function showLine() {
